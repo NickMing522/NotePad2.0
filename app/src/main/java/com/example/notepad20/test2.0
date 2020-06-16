@@ -1,0 +1,163 @@
+package com.example.xutilsdemo;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.xutilsdemo.User;
+import org.xutils.DbManager;
+import org.xutils.common.Callback;
+import org.xutils.common.util.KeyValue;
+import org.xutils.db.sqlite.WhereBuilder;
+import org.xutils.ex.DbException;
+import org.xutils.http.RequestParams;
+import org.xutils.image.ImageOptions;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.Event;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
+
+import java.io.File;
+import java.util.ArrayList;
+
+@ContentView(R.layout.activity_main)
+public class MainActivity extends AppCompatActivity {
+  //  DbManager db;
+    String url = "https://i.picsum.photos/id/1/5616/3744.jpg";
+    @ViewInject(R.id.img)
+    ImageView iv;
+
+    @ViewInject(R.id.tv)
+    TextView tv;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        x.view().inject(this);
+
+        ImageOptions options = new ImageOptions.Builder()
+                .setFadeIn(true)
+                .setCrop(true)
+                .setSize(300,300).build();
+
+        x.image().loadDrawable(url,options, new Callback.CommonCallback<Drawable>() {
+            @Override
+            public void onSuccess(Drawable result) {
+                iv.setImageDrawable(result);
+                tv.setText("图片加载成功");
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                tv.setText("图片加载错误");
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+            }
+
+            @Override
+            public void onFinished() {
+            }
+        });
+
+        x.image().loadFile(url, options, new Callback.CacheCallback<File>() {
+            @Override
+            public boolean onCache(File result) {
+                //使用本地图片
+                Log.i("test",result.getPath());
+                return true;
+
+            }
+
+            @Override
+            public void onSuccess(File result) {
+
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
+
+
+
+
+
+//        x.image().bind(iv, url,options, new Callback.CacheCallback<Drawable>() {
+//            @Override
+//            //缓存
+//            public boolean onCache(Drawable result) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSuccess(Drawable result) {
+//                tv.setText("图片加载成功");
+//            }
+//
+//            @Override
+//            public void onError(Throwable ex, boolean isOnCallback) {
+//                tv.setText("图片加载错误");
+//            }
+//
+//            @Override
+//            public void onCancelled(CancelledException cex) {
+//
+//            }
+//
+//            @Override
+//            public void onFinished() {
+//
+//            }
+//        });
+
+       // setContentView(R.layout.activity_main);
+
+//        DbManager.DaoConfig daoConfig = new DbManager.DaoConfig()
+//                .setDbName("test.db")
+//                .setDbDir(new File("/sdcard"))
+//                .setDbVersion(2)
+//                .setDbOpenListener(new DbManager.DbOpenListener() {
+//                    @Override
+//                    public void onDbOpened(DbManager db) throws DbException {
+//                       //开启WAL，提升写入速度
+//                        db.getDatabase().enableWriteAheadLogging();
+//                    }
+//                })
+//                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
+//                    @Override
+//                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) throws DbException {
+//                        //可进行建表等相关操作
+//                    }
+//                });
+//
+//
+//        try {
+//            db = x.getDb(daoConfig);
+//        } catch (DbException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
